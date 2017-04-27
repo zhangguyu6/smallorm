@@ -5,7 +5,7 @@ class dbdrive:
     def __init__(self, dbname):
         self.dbconn = sqlite3.connect(dbname)
 
-    def create_table(self, tableclass):
+    def create(self, tableclass):
         # 通过每个class的静态属性field来获得类名
         cursor = self.dbconn.cursor()
         tablename = tableclass.fields.tablename
@@ -14,7 +14,7 @@ class dbdrive:
         cursor.execute(sql)
         self.dbconn.commit()
 
-    def drop_table(self, tableclass):
+    def drop(self, tableclass):
         cursor = self.dbconn.cursor()
         tablename = tableclass.fields.tablename
         cursor.execute("DROP TABLE {tablename:};".format(tablename=tablename))
@@ -477,21 +477,21 @@ class Model(metaclass=Metamodel):
         return {key: getattr(self, key) for key in self.fields.fields}
 
     @classmethod
-    def create_table(cls):
-        cls.db.create_table(cls)
+    def create(cls):
+        cls.db.create(cls)
 
     @classmethod
-    def test_create_table(cls):
+    def test_create(cls):
         tablename = cls.fields.tablename
         fields = ",".join(field.to_sql() for field in cls.fields.get_all_fields())
         return "CREATE TABLE {tablename:} ({fields:});".format(tablename=tablename, fields=fields)
 
     @classmethod
-    def drop_table(cls):
-        cls.db.drop_table(cls)
+    def drop(cls):
+        cls.db.drop(cls)
 
     @classmethod
-    def test_drop_table(cls):
+    def test_drop(cls):
         tablename = cls.fields.tablename
         return "DROP TABLE {tablename:};".format(tablename=tablename)
 
@@ -540,8 +540,8 @@ class Result:
 #
 #
 # a = User()
-# print(User.test_create_table())
-# print(User.test_drop_table())
+# print(User.test_create())
+# print(User.test_drop())
 # print(User.select().where(User.name < "zgy").complie())
 # print(SelectQuery(db=db, table=[User, Student])
 #       .where((User.name == Student.name) & (User.name < "zgy"))

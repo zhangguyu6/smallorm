@@ -17,11 +17,11 @@ class Student(Model):
     score=IntegerField()
 
 if db.isexisttable(Course):
-    Course.drop_table()
+    Course.drop()
 if db.isexisttable(Student):
-    Student.drop_table()
-Course.create_table()
-Student.create_table()
+    Student.drop()
+Course.create()
+Student.create()
 
 Course.insert(id=1,classname="cs001").execute()
 Course.insert(id=2,classname="cs002").execute()
